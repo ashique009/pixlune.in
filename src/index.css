@@ -9,21 +9,43 @@
   }
 
   body {
-    background-color: #08080a;
+    background-color: #050507;
     color: #f4f4f6;
     overflow-x: hidden;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
+}
+
+/* 3D Perspective & Spatial Layering Utilities */
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.perspective-1600 {
+  perspective: 1600px;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }
 
 /* Custom Gold Accent Utilities */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #f6e6bf 0%, #d4af37 50%, #b8933b 100%);
+  background: linear-gradient(135deg, #fcebc5 0%, #d4af37 50%, #a3894e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .bg-gold-gradient {
-  background: linear-gradient(135deg, #f6e6bf 0%, #d4af37 50%, #b8933b 100%);
+  background: linear-gradient(135deg, #fcebc5 0%, #d4af37 50%, #a3894e 100%);
 }
 
 .border-gold-subtle {
@@ -32,18 +54,51 @@
 
 .border-gold-glow {
   border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 0 20px -3px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 0 25px -4px rgba(212, 175, 55, 0.2);
 }
 
-/* Subtle luxury card styling */
+/* Luxury card styling */
 .luxury-card {
-  background: #121217;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #0f0f14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .luxury-card:hover {
-  border-color: rgba(212, 175, 55, 0.35);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -4px rgba(212, 175, 55, 0.12);
-  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(212, 175, 55, 0.15);
+}
+
+/* Studio Floor Shadow & Specular Glows */
+.studio-shadow {
+  box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.95), 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+}
+
+.studio-glow-gold {
+  box-shadow: 0 20px 50px -10px rgba(212, 175, 55, 0.18), 0 0 100px -20px rgba(212, 175, 55, 0.1);
+}
+
+/* Sleek Screen Glare Overlay */
+.screen-glare {
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.03) 30%,
+    transparent 60%
+  );
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #08080a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f1f28;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
 }

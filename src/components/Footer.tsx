@@ -74,16 +74,23 @@ export const Footer: React.FC = () => {
               </div>
 
               <div>
-                <a
-                  href={siteConfig.contact.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 hover:text-white transition-colors"
-                >
-                  <Instagram className="w-3.5 h-3.5 text-pix-gold" />
-                  <span>{siteConfig.contact.instagramHandle}</span>
-                  <ArrowUpRight className="w-3 h-3 text-pix-dim" />
-                </a>
+                {siteConfig.contact.hasInstagramConfigured ? (
+                  <a
+                    href={siteConfig.contact.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 hover:text-white transition-colors"
+                  >
+                    <Instagram className="w-3.5 h-3.5 text-pix-gold" />
+                    <span>{siteConfig.contact.instagramHandle}</span>
+                    <ArrowUpRight className="w-3 h-3 text-pix-dim" />
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center gap-2 text-pix-dim">
+                    <Instagram className="w-3.5 h-3.5 text-pix-gold/60" />
+                    <span>{siteConfig.contact.instagramHandle}</span>
+                  </span>
+                )}
               </div>
 
               <div className="pt-2 text-xs text-pix-dim">

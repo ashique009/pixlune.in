@@ -4,11 +4,11 @@ export interface SiteConfig {
   domain: string;
   contact: {
     email: string;
-    emailPlaceholderNote?: string;
     instagram: string;
     instagramHandle: string;
-    whatsapp: string; // configured or placeholder
-    hasWhatsappConfigured: boolean;
+    hasInstagramConfigured: boolean;
+    whatsapp?: string;
+    hasWhatsappConfigured?: boolean;
   };
   navigation: {
     label: string;
@@ -21,10 +21,11 @@ export const siteConfig: SiteConfig = {
   tagline: 'Where ideas become real',
   domain: 'pixlune.in',
   contact: {
-    email: 'contact@pixlune.in', // Official domain email placeholder
-    instagram: 'https://instagram.com/pixlune', // Instagram placeholder link
-    instagramHandle: '@pixlune',
-    whatsapp: '', // Left unconfigured as per prompt; placeholder available
+    email: 'pixlunedigital@gmail.com',
+    instagram: 'https://www.instagram.com/pixlune.in/',
+    instagramHandle: '@pixlune.in',
+    hasInstagramConfigured: true,
+    whatsapp: '',
     hasWhatsappConfigured: false,
   },
   navigation: [

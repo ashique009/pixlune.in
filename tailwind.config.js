@@ -39,8 +39,29 @@ export default {
         'gold-md': '0 0 30px -5px rgba(212, 175, 55, 0.25)',
         'card-glow': '0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05)',
       },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translate3d(0, 0, 0)' },
+          '100%': { transform: 'translate3d(-50%, 0, 0)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-14px)' },
+        },
+        'float-slow': {
+          '0%, 100%': { transform: 'translate3d(0, 0, 0)' },
+          '50%': { transform: 'translate3d(0, -22px, 0)' },
+        },
+        'spin-slow': {
+          to: { transform: 'rotate(360deg)' },
+        },
+      },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        marquee: 'marquee 32s linear infinite',
+        float: 'float 6s ease-in-out infinite',
+        'float-slow': 'float-slow 10s ease-in-out infinite',
+        'spin-slow': 'spin-slow 28s linear infinite',
       },
     },
   },

@@ -11,6 +11,8 @@ export interface ProjectItem {
   statusBadge?: string;
   featured?: boolean;
   isUpcoming?: boolean;
+  /** Private client build: showcased only, no public access. */
+  isPrivate?: boolean;
   accentColor: string;
   browserUrl?: string;
 }
@@ -51,10 +53,10 @@ export const projects: ProjectItem[] = [
       'Delivery Fleet & Dispatch Workflow',
     ],
     technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Express', 'PostgreSQL'],
-    link: 'https://kifa-foodco-management.pages.dev/',
     image: '/projects/kifa.png',
+    isPrivate: true,
+    statusBadge: 'Private Client Build',
     accentColor: '#38BDF8',
-    browserUrl: 'kifa-foodco-management.pages.dev',
   },
   {
     id: 'lynqo',

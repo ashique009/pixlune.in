@@ -1,20 +1,33 @@
 import React, { useState } from 'react';
-import { Mail, Instagram, Copy, Check, Send, ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  Copy,
+  Instagram,
+  Mail,
+  Send,
+} from 'lucide-react';
 import { siteConfig } from '../data/siteConfig';
+import { Reveal } from './ui/Motion';
 
 export const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(siteConfig.contact.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(siteConfig.contact.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Clipboard access can be blocked; the address stays visible to copy manually.
+    }
   };
 
-  const handleMailtoSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleMailtoSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     const mailtoUrl = `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(
       subject || 'Website Inquiry — PIXLUNE'
     )}&body=${encodeURIComponent(message)}`;
@@ -22,158 +35,194 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 px-6 lg:px-8 border-t border-white/5 relative bg-pix-dark">
-      {/* Background Radial Glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-pix-gold/5 blur-[140px] rounded-full pointer-events-none" />
+    <section
+      id="contact"
+      className="relative overflow-hidden border-t border-white/5 bg-pix-dark py-20 sm:py-28"
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-1/2 h-[380px] w-[760px] -translate-x-1/2 rounded-full bg-pix-gold/[0.07] blur-[140px]"
+      />
 
-      <div className="max-w-5xl mx-auto space-y-16 relative z-10">
-        {/* Section Header with "Let's Work Together" */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
-          <span className="text-xs font-semibold tracking-widest uppercase text-pix-gold">
-            Start A Conversation
-          </span>
-          <h2 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white">
-            Let's Work Together
-          </h2>
-          <p className="text-base text-pix-muted leading-relaxed">
-            Have a project in mind? Let's build something meaningful together.
-          </p>
-        </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Left column */}
+          <div className="lg:col-span-5">
+            <Reveal>
+              <span className="inline-flex items-center gap-2 rounded-full border border-pix-gold/25 bg-pix-gold/[0.07] px-3.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-pix-gold">
+                <span className="h-1.5 w-1.5 rounded-full bg-pix-gold" />
+                Start A Conversation
+              </span>
+            </Reveal>
 
-        {/* Two Elegant Contact Options: Email & Instagram */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {/* 1. Primary Business Email Channel */}
-          <div className="luxury-card rounded-2xl p-7 sm:p-8 flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-pix-surface border border-pix-gold/30 flex items-center justify-center shadow-gold-sm">
-                <Mail className="w-6 h-6 text-pix-gold" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-semibold text-white">Email Us</h3>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-pix-gold bg-pix-gold/10 px-2 py-0.5 rounded-full border border-pix-gold/20">
-                    Primary
-                  </span>
-                </div>
-                <p className="text-xs text-pix-dim mt-0.5">Direct business & project inquiries</p>
-              </div>
-              <a
-                href={`mailto:${siteConfig.contact.email}`}
-                className="block text-sm sm:text-base font-medium text-pix-gold-light hover:underline break-all transition-colors"
-                aria-label={`Send email to ${siteConfig.contact.email}`}
-              >
-                {siteConfig.contact.email}
-              </a>
-            </div>
+            <Reveal delay={0.08}>
+              <h2 className="mt-5 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.85rem]">
+                Let's build something{' '}
+                <span className="text-gold-gradient">worth remembering</span>
+              </h2>
+            </Reveal>
 
-            <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              <button
-                type="button"
-                onClick={handleCopyEmail}
-                className="inline-flex items-center justify-center gap-2 text-xs font-medium text-pix-muted hover:text-white px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-pix-gold" />
-                    <span className="text-white">Email Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy Address</span>
-                  </>
-                )}
-              </button>
-
-              <a
-                href={`mailto:${siteConfig.contact.email}`}
-                className="inline-flex items-center justify-center gap-2 text-xs font-medium text-white px-4 py-2.5 rounded-lg bg-pix-gold/10 hover:bg-pix-gold/20 text-pix-gold-light border border-pix-gold/30 transition-colors"
-              >
-                <span>Open Mail Client</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          </div>
-
-          {/* 2. Official Instagram Channel */}
-          <div className="luxury-card rounded-2xl p-7 sm:p-8 flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-pix-surface border border-pix-gold/30 flex items-center justify-center shadow-gold-sm">
-                <Instagram className="w-6 h-6 text-pix-gold" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-white">Instagram</h3>
-                <p className="text-xs text-pix-dim mt-0.5">Agency updates & behind the scenes</p>
-              </div>
-              <p className="text-sm sm:text-base font-medium text-white font-mono">
-                {siteConfig.contact.instagramHandle}
+            <Reveal delay={0.14}>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-pix-muted sm:text-base">
+                Have a project in mind? Tell us where you want to go — we'll map the
+                fastest route to a polished, production-ready platform.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="pt-2">
-              <a
-                href={siteConfig.contact.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 text-xs font-medium text-white px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 hover:text-pix-gold border border-white/5 hover:border-pix-gold/30 transition-colors w-full sm:w-auto"
-                aria-label={`Visit official Instagram profile: ${siteConfig.contact.instagramHandle}`}
-              >
-                <span>Visit Profile</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+            <div className="mt-8 space-y-3">
+              <Reveal delay={0.2}>
+                <div className="luxury-card rounded-2xl p-5">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-pix-gold/30 bg-pix-surface text-pix-gold shadow-gold-sm">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[9px] uppercase tracking-[0.2em] text-pix-dim">
+                        Email the studio
+                      </p>
+                      <a
+                        href={`mailto:${siteConfig.contact.email}`}
+                        className="mt-1 block truncate text-sm font-medium text-white transition-colors hover:text-pix-gold-light sm:text-[15px]"
+                        aria-label={`Send email to ${siteConfig.contact.email}`}
+                      >
+                        {siteConfig.contact.email}
+                      </a>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyEmail}
+                      aria-label="Copy email address"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-pix-muted transition-colors hover:border-pix-gold/40 hover:text-pix-gold"
+                    >
+                      {copied ? (
+                        <Check className="h-3.5 w-3.5 text-pix-gold" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
+                  {copied && (
+                    <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.16em] text-pix-gold">
+                      Address copied
+                    </p>
+                  )}
+                </div>
+              </Reveal>
+
+              <Reveal delay={0.26}>
+                <a
+                  href={siteConfig.contact.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="luxury-card group flex items-center gap-4 rounded-2xl p-5"
+                  aria-label={`Visit Instagram profile: ${siteConfig.contact.instagramHandle}`}
+                >
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-pix-gold/30 bg-pix-surface text-pix-gold shadow-gold-sm">
+                    <Instagram className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[9px] uppercase tracking-[0.2em] text-pix-dim">
+                      Behind the scenes
+                    </p>
+                    <p className="mt-1 truncate text-sm font-medium text-white transition-colors group-hover:text-pix-gold-light">
+                      {siteConfig.contact.instagramHandle}
+                    </p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-pix-muted transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-pix-gold" />
+                </a>
+              </Reveal>
+
+              <Reveal delay={0.32}>
+                <div className="flex items-center gap-2.5 px-1 pt-2 text-[10px] uppercase tracking-[0.2em] text-pix-dim">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pix-gold/70" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-pix-gold" />
+                  </span>
+                  Open for select collaborations
+                </div>
+              </Reveal>
             </div>
           </div>
-        </div>
 
-        {/* Quick Inquiry Form */}
-        <div className="luxury-card rounded-2xl p-8 sm:p-10 border-gold-subtle max-w-2xl mx-auto space-y-6">
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-white tracking-tight">
-              Send a Quick Inquiry
-            </h3>
-            <p className="text-xs text-pix-muted">
-              Sends directly to {siteConfig.contact.email}
-            </p>
-          </div>
-
-          <form onSubmit={handleMailtoSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="subject" className="block text-xs font-medium text-pix-dim mb-1.5">
-                Project or Subject
-              </label>
-              <input
-                id="subject"
-                type="text"
-                placeholder="e.g. Website development for brand launch"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="w-full bg-pix-surface border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-pix-dim focus:outline-none focus:border-pix-gold transition-colors"
+          {/* Form */}
+          <Reveal delay={0.12} className="lg:col-span-7">
+            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-[#111116] to-[#0a0a0d] p-6 sm:p-8 lg:p-10">
+              <span
+                aria-hidden
+                className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-pix-gold/50 to-transparent"
               />
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block text-xs font-medium text-pix-dim mb-1.5">
-                Tell us about your project requirements
-              </label>
-              <textarea
-                id="message"
-                rows={4}
-                required
-                placeholder="Briefly describe your timeline, features needed, or goals..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="w-full bg-pix-surface border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-pix-dim focus:outline-none focus:border-pix-gold transition-colors resize-none"
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-pix-gold/[0.08] blur-[80px]"
               />
-            </div>
 
-            <button
-              type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-gold-gradient text-black text-xs font-semibold tracking-wider uppercase hover:opacity-95 transition-opacity shadow-gold-sm"
-            >
-              <span>Compose Message</span>
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </form>
+              <div className="relative">
+                <h3 className="font-display text-xl font-bold tracking-tight text-white sm:text-2xl">
+                  Send a quick inquiry
+                </h3>
+                <p className="mt-1 text-xs text-pix-muted">
+                  Goes straight to{' '}
+                  <span className="text-pix-gold-light">{siteConfig.contact.email}</span>
+                </p>
+
+                <form onSubmit={handleMailtoSubmit} className="mt-7 space-y-5">
+                  <div>
+                    <label
+                      htmlFor="subject"
+                      className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.16em] text-pix-dim"
+                    >
+                      Project or subject
+                    </label>
+                    <input
+                      id="subject"
+                      type="text"
+                      placeholder="Website development for a brand launch"
+                      value={subject}
+                      onChange={(event) => setSubject(event.target.value)}
+                      className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/25 focus:border-pix-gold/60 focus:bg-black/60 focus:ring-4 focus:ring-pix-gold/10"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="message"
+                      className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.16em] text-pix-dim"
+                    >
+                      Project requirements
+                    </label>
+                    <textarea
+                      id="message"
+                      rows={5}
+                      required
+                      placeholder="Briefly describe your timeline, features needed, or goals..."
+                      value={message}
+                      onChange={(event) => setMessage(event.target.value)}
+                      className="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/25 focus:border-pix-gold/60 focus:bg-black/60 focus:ring-4 focus:ring-pix-gold/10"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-gold-gradient py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-black shadow-gold-sm transition-shadow duration-300 hover:shadow-gold-md"
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      Compose Message
+                      <Send className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </span>
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                    />
+                  </button>
+
+                  <p className="flex items-center justify-center gap-1.5 text-center text-[10px] text-pix-dim">
+                    Opens your email app with the details pre-filled
+                    <ArrowUpRight className="h-3 w-3 text-pix-gold/70" />
+                  </p>
+                </form>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

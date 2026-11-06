@@ -106,7 +106,15 @@ export const LaptopMockup: React.FC<LaptopMockupProps> = ({ project, priority = 
               </div>
 
               {/* External Link Action in Header */}
-              {project.link ? (
+              {project.isPrivate ? (
+                <span
+                  className="text-pix-gold/70 p-1"
+                  title="Private project — access restricted"
+                  aria-label="Private project, access restricted"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                </span>
+              ) : project.link ? (
                 <a
                   href={project.link}
                   target="_blank"
@@ -263,10 +271,13 @@ export const LaptopMockup: React.FC<LaptopMockupProps> = ({ project, priority = 
               className="absolute right-1 sm:-right-4 md:-right-8 top-10 sm:top-16 md:top-24 z-30 w-44 sm:w-56 md:w-60 bg-[#0e1726]/95 backdrop-blur-xl border border-sky-500/40 rounded-2xl p-3 sm:p-4 shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_25px_rgba(56,189,248,0.18)]"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-sky-400 bg-sky-500/15 px-2 py-0.5 rounded-full border border-sky-500/30">
-                  Operations Live
+                <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-sky-400 bg-sky-500/15 px-2 py-0.5 rounded-full border border-sky-500/30">
+                  <Lock className="w-2.5 h-2.5" />
+                  Private Workspace
                 </span>
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
+                <span className="text-[8px] sm:text-[9px] font-mono uppercase tracking-wider text-sky-300/70">
+                  Locked
+                </span>
               </div>
               <div className="space-y-1.5 sm:space-y-2 pt-1">
                 <div className="bg-white/5 rounded-lg p-1.5 sm:p-2 border border-white/5">

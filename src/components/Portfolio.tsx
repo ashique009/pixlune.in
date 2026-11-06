@@ -1,228 +1,353 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Check, Sparkles, Star, ArrowUpRight } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  Clock,
+  Lock,
+  Plus,
+  Sparkles,
+  Star,
+} from 'lucide-react';
 import { projects } from '../data/projects';
 import { LaptopMockup } from './LaptopMockup';
+import { ProjectCard } from './ProjectCard';
+import { EASE, Reveal, SectionHeading } from './ui/Motion';
+
+const pad = (value: number) => String(value).padStart(2, '0');
 
 export const Portfolio: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('zentroo');
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const total = projects.length;
+  const active = projects[activeIndex];
+
+  const selectProject = (nextIndex: number, scrollToStage = false) => {
+    const wrapped = ((nextIndex % total) + total) % total;
+    const forward = (wrapped - activeIndex + total) % total;
+
+    if (forward !== 0) {
+      setDirection(forward <= total / 2 ? 1 : -1);
+      setActiveIndex(wrapped);
+    }
+
+    if (scrollToStage) {
+      stageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
-    <section id="work" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-white/5 relative bg-[#060608]">
-      {/* Ambient Lighting Layers */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-pix-gold/5 blur-[160px] rounded-full pointer-events-none -z-10" />
+    <section
+      id="work"
+      className="relative overflow-hidden border-t border-white/5 bg-[#060608] py-20 sm:py-28"
+    >
+      {/* Ambient lighting */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-32 -z-0 h-[420px] w-[860px] -translate-x-1/2 rounded-full opacity-60 blur-[150px]"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(212,175,55,0.10) 0%, rgba(212,175,55,0.02) 55%, transparent 75%)',
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+          maskImage: 'radial-gradient(ellipse 60% 55% at 50% 30%, black, transparent 80%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 60% 55% at 50% 30%, black, transparent 80%)',
+        }}
+      />
 
-      <div className="max-w-7xl mx-auto space-y-20 sm:space-y-28">
+      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        <SectionHeading
+          eyebrow="Selected Work"
+          title={
+            <>
+              Work arranged in <span className="text-gold-gradient">another dimension</span>
+            </>
+          }
+          description="Step through our live platforms in a 3D studio. Rotate each build, inspect the craft, then open it in the real world."
+        />
+
         {/* ============================================================ */}
-        {/* SECTION HEADER                                               */}
+        {/* 3D SHOWCASE STAGE                                            */}
         {/* ============================================================ */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-pix-gold bg-pix-gold/10 px-3.5 py-1 rounded-full border border-pix-gold/20"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Cinematic Portfolio</span>
-          </motion.div>
+        <div ref={stageRef} className="mt-12 scroll-mt-24 sm:mt-16">
+          <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-6">
+            {/* Active project dossier */}
+            <div className="order-2 lg:order-1 lg:col-span-5">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={active.id}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -14 }}
+                  transition={{ duration: 0.38, ease: EASE }}
+                  className="space-y-6 lg:min-h-[430px]"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className="font-mono text-[11px] font-medium tracking-[0.24em]"
+                      style={{ color: active.accentColor }}
+                    >
+                      {pad(activeIndex + 1)} / {pad(total)}
+                    </span>
+                    <span className="h-3 w-px bg-white/15" />
+                    <span className="rounded-full border border-pix-gold/25 bg-pix-gold/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-pix-gold">
+                      {active.category}
+                    </span>
+                    {active.featured ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-950/50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-200">
+                        <Star className="h-3 w-3 fill-pix-gold text-pix-gold" />
+                        Featured
+                      </span>
+                    ) : (
+                      active.statusBadge && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-pix-muted">
+                          {active.isPrivate ? (
+                            <Lock className="h-3 w-3 text-pix-gold" />
+                          ) : (
+                            <Clock className="h-3 w-3 text-pix-gold" />
+                          )}
+                          {active.statusBadge}
+                        </span>
+                      )
+                    )}
+                  </div>
 
-          <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
-            Selected Works &amp; <span className="text-gold-gradient">Live Platforms</span>
-          </h2>
-          <p className="text-sm sm:text-base text-pix-muted max-w-2xl mx-auto leading-relaxed">
-            Experience our digital creations inside realistic 3D environments. Each project is engineered with custom aesthetics, layered depth, and scalable technical foundations.
-          </p>
+                  <div>
+                    <h3 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                      {active.title}
+                    </h3>
+                    <p className="mt-2 text-sm font-medium tracking-wide text-pix-gold-light/85">
+                      {active.tagline}
+                    </p>
+                  </div>
 
-          {/* Quick Jump Navigation Pill Bar */}
-          <div className="pt-6 flex flex-wrap justify-center gap-2">
-            {projects.map((proj, idx) => (
-              <button
-                key={proj.id}
-                onClick={() => {
-                  setActiveTab(proj.id);
-                  const el = document.getElementById(`project-${proj.id}`);
-                  if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  <p className="text-sm leading-relaxed text-pix-muted sm:text-[15px]">
+                    {active.description}
+                  </p>
+
+                  <div className="space-y-2.5 border-t border-white/10 pt-5">
+                    {active.features.map((feature) => (
+                      <div
+                        key={feature}
+                        className="flex items-start gap-2.5 text-[13px] leading-snug text-pix-muted"
+                      >
+                        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-pix-gold/25 bg-pix-gold/10">
+                          <Check className="h-2.5 w-2.5 text-pix-gold" />
+                        </span>
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 border-t border-white/10 pt-5">
+                    {active.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded-md border border-white/5 bg-white/[0.04] px-2.5 py-1 font-mono text-[10px] text-pix-dim"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="pt-1">
+                    {active.isPrivate ? (
+                      <a
+                        href="#contact"
+                        className="group/locked inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 text-[11px] font-medium text-pix-dim transition-colors duration-300 hover:border-pix-gold/40 hover:text-white"
+                      >
+                        <Lock className="h-3.5 w-3.5 text-pix-gold" />
+                        <span>Private build — request a walkthrough</span>
+                      </a>
+                    ) : active.link ? (
+                      <a
+                        href={active.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/live inline-flex items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-black shadow-gold-sm transition-transform duration-300 hover:-translate-y-0.5"
+                      >
+                        <span>Launch Live Site</span>
+                        <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/live:translate-x-0.5 group-hover/live:-translate-y-0.5" />
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 text-[11px] font-medium text-pix-dim">
+                        <span className="h-1.5 w-1.5 rounded-full bg-pix-gold/60" />
+                        Confidential build — launching soon
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* 3D stage */}
+            <div className="order-1 lg:order-2 lg:col-span-7">
+              <div
+                tabIndex={0}
+                role="group"
+                aria-roledescription="carousel"
+                aria-label="Project showcase. Use the left and right arrow keys to navigate."
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    selectProject(activeIndex + 1);
+                  }
+                  if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    selectProject(activeIndex - 1);
                   }
                 }}
-                className={`text-xs px-3.5 py-1.5 rounded-full border transition-all duration-300 font-medium ${
-                  activeTab === proj.id
-                    ? 'bg-gold-gradient text-black font-semibold border-transparent shadow-gold-sm'
-                    : 'bg-white/[0.03] text-pix-muted border-white/10 hover:border-pix-gold/40 hover:text-white'
-                }`}
+                className="relative rounded-[2rem] outline-none"
               >
-                <span>{`0${idx + 1}. ${proj.title}`}</span>
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-10 top-1/2 -z-0 h-2/3 -translate-y-1/2 rounded-full opacity-70 blur-[100px]"
+                  style={{
+                    background: `radial-gradient(circle, ${active.accentColor}26 0%, transparent 70%)`,
+                  }}
+                />
+
+                <div className="perspective-2000 relative">
+                  <AnimatePresence mode="wait" initial={false} custom={direction}>
+                    <motion.div
+                      key={active.id}
+                      custom={direction}
+                      variants={{
+                        enter: (dir: number) => ({
+                          opacity: 0,
+                          x: dir * 90,
+                          rotateY: dir * 16,
+                          scale: 0.94,
+                        }),
+                        center: { opacity: 1, x: 0, rotateY: 0, scale: 1 },
+                        exit: (dir: number) => ({
+                          opacity: 0,
+                          x: dir * -70,
+                          rotateY: dir * -12,
+                          scale: 0.95,
+                        }),
+                      }}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ duration: 0.55, ease: EASE }}
+                      drag="x"
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.06}
+                      onDragEnd={(_, info) => {
+                        if (info.offset.x < -80) selectProject(activeIndex + 1);
+                        else if (info.offset.x > 80) selectProject(activeIndex - 1);
+                      }}
+                      className="preserve-3d cursor-grab active:cursor-grabbing"
+                    >
+                      <LaptopMockup project={active} priority />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              <p className="mt-2 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-pix-dim/70">
+                <Sparkles className="h-3 w-3 text-pix-gold/60" />
+                Drag, swipe or use arrow keys
+              </p>
+            </div>
+          </div>
+
+          {/* Carousel controls */}
+          <div className="mt-8 flex items-center gap-4 sm:mt-10 sm:gap-6">
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => selectProject(activeIndex - 1)}
+                aria-label="Previous project"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-pix-muted transition-all duration-300 hover:border-pix-gold/50 hover:bg-pix-gold/10 hover:text-pix-gold"
+              >
+                <ArrowLeft className="h-4 w-4" />
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => selectProject(activeIndex + 1)}
+                aria-label="Next project"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-pix-muted transition-all duration-300 hover:border-pix-gold/50 hover:bg-pix-gold/10 hover:text-pix-gold"
+              >
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="relative hidden h-px flex-1 overflow-hidden bg-white/10 sm:block">
+              <motion.div
+                className="absolute inset-y-0 left-0 bg-gold-gradient"
+                animate={{ width: `${((activeIndex + 1) / total) * 100}%` }}
+                transition={{ duration: 0.5, ease: EASE }}
+              />
+            </div>
+
+            <span className="ml-auto font-mono text-xs tracking-[0.18em] text-pix-dim sm:ml-0">
+              <span className="text-white">{pad(activeIndex + 1)}</span> / {pad(total)}
+            </span>
           </div>
         </div>
 
         {/* ============================================================ */}
-        {/* SCROLL-DRIVEN SEQUENCE OF CINEMATIC PROJECT SHOWCASES        */}
+        {/* 3D ARCHIVE GRID                                              */}
         {/* ============================================================ */}
-        <div className="space-y-32 sm:space-y-40">
-          {projects.map((project, index) => {
-            const isEven = index % 2 === 0;
-            const isFeatured = project.featured;
+        <div className="mt-16 sm:mt-20">
+          <div className="mb-5 flex items-end justify-between gap-4 border-t border-white/10 pt-8">
+            <div>
+              <h3 className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-white/85">
+                Browse the archive
+              </h3>
+              <p className="mt-1 text-xs text-pix-dim">
+                One tap moves any build onto the 3D stage.
+              </p>
+            </div>
+            <span className="hidden font-mono text-[11px] tracking-[0.16em] text-pix-dim sm:block">
+              {pad(total)} / {pad(total)} PROJECTS
+            </span>
+          </div>
 
-            return (
-              <div
-                key={project.id}
-                id={`project-${project.id}`}
-                className="scroll-mt-28 relative"
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+            {projects.map((project, index) => (
+              <Reveal key={project.id} delay={index * 0.04}>
+                <ProjectCard
+                  project={project}
+                  index={index}
+                  active={project.id === active.id}
+                  onSelect={() => selectProject(index, true)}
+                />
+              </Reveal>
+            ))}
+
+            <Reveal delay={projects.length * 0.04}>
+              <a
+                href="#contact"
+                className="group relative flex aspect-[16/10] w-full flex-col justify-between overflow-hidden rounded-2xl border border-dashed border-pix-gold/30 bg-pix-gold/[0.03] p-3.5 transition-colors duration-300 hover:border-pix-gold/60 hover:bg-pix-gold/[0.07] sm:p-4"
               >
-                {/* Visual Project Number Watermark */}
-                <div className="absolute -top-12 sm:-top-16 left-0 right-0 flex justify-between items-center opacity-15 pointer-events-none select-none z-0">
-                  <span className="font-display text-6xl sm:text-8xl font-black text-white/20 tracking-tighter">
-                    {`0${index + 1}`}
-                  </span>
-                  <span className="text-xs font-mono tracking-widest text-pix-gold uppercase hidden sm:block">
-                    {project.category}
-                  </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-full border border-pix-gold/30 bg-pix-gold/10 text-pix-gold transition-transform duration-300 group-hover:rotate-90">
+                  <Plus className="h-3.5 w-3.5" />
                 </div>
-
-                {/* Main Card Container */}
-                <div
-                  className={`relative rounded-3xl p-6 sm:p-10 lg:p-12 border transition-all duration-500 ${
-                    isFeatured
-                      ? 'bg-gradient-to-b from-[#13131b] via-[#0f0f15] to-[#0a0a0e] border-pix-gold/40 shadow-[0_0_50px_-15px_rgba(212,175,55,0.15)]'
-                      : 'bg-[#0e0e13]/80 border-white/10 hover:border-pix-gold/30'
-                  }`}
-                >
-                  {/* Subtle Corner Glow Accent */}
-                  <div
-                    className="absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-40 -z-10"
-                    style={{ backgroundColor: project.accentColor || '#d4af37' }}
-                  />
-
-                  {/* Grid Layout: Specification Dossier & 3D Laptop */}
-                  <div
-                    className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center ${
-                      isEven ? '' : 'lg:flex-row-reverse'
-                    }`}
-                  >
-                    {/* Column A: Project Overview & Features */}
-                    <div
-                      className={`lg:col-span-5 space-y-6 ${
-                        isEven ? 'lg:order-1' : 'lg:order-2'
-                      }`}
-                    >
-                      {/* Meta Pill Row */}
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <span className="text-xs font-semibold tracking-wider uppercase text-pix-gold bg-pix-gold/10 px-3 py-1 rounded-full border border-pix-gold/25">
-                          {project.category}
-                        </span>
-
-                        {project.featured && (
-                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200 bg-amber-950/60 px-3 py-1 rounded-full border border-amber-500/30">
-                            <Star className="w-3.5 h-3.5 text-pix-gold fill-pix-gold" />
-                            <span>Featured Platform</span>
-                          </span>
-                        )}
-
-                        {project.statusBadge && (
-                          <span className="text-xs font-medium text-pix-muted bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                            {project.statusBadge}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Title & Tagline */}
-                      <div>
-                        <h3 className="font-display text-2xl sm:text-4xl font-bold text-white tracking-tight">
-                          {project.title}
-                        </h3>
-                        {project.tagline && (
-                          <p className="text-sm text-pix-gold-light/80 font-medium tracking-wide mt-1.5">
-                            {project.tagline}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Concise Description */}
-                      <p className="text-sm sm:text-base text-pix-muted leading-relaxed font-normal">
-                        {project.description}
-                      </p>
-
-                      {/* Key Verified Features */}
-                      {project.features && project.features.length > 0 && (
-                        <div className="space-y-2 pt-2 border-t border-white/10">
-                          <span className="text-xs font-bold uppercase tracking-widest text-white/90 block mb-2">
-                            Engineered Capabilities
-                          </span>
-                          <div className="space-y-2">
-                            {project.features.map((feature, fIdx) => (
-                              <div
-                                key={fIdx}
-                                className="flex items-start gap-2.5 text-xs text-pix-muted leading-snug"
-                              >
-                                <Check className="w-4 h-4 text-pix-gold shrink-0 mt-0.5" />
-                                <span>{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Tech Stack Pills */}
-                      <div className="space-y-2 pt-2 border-t border-white/10">
-                        <span className="text-xs font-bold uppercase tracking-widest text-white/90 block mb-2">
-                          Technology Stack
-                        </span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {project.technologies.map((tech) => (
-                            <span
-                              key={tech}
-                              className="text-[11px] font-mono text-pix-dim px-2.5 py-1 rounded-md bg-white/[0.04] border border-white/5"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Action Button: Live Demo / View Project */}
-                      <div className="pt-4 flex items-center gap-4">
-                        {project.link ? (
-                          <a
-                            href={project.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Open Live Demo for ${project.title}`}
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold-gradient text-black font-bold text-xs tracking-wider uppercase hover:opacity-95 transition-all shadow-gold-sm group"
-                          >
-                            <span>Live Demo</span>
-                            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                          </a>
-                        ) : (
-                          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.03] text-pix-dim border border-white/5 text-xs font-medium">
-                            <span className="w-2 h-2 rounded-full bg-pix-gold/50" />
-                            <span>Confidential Showcase &bull; Launching Soon</span>
-                          </div>
-                        )}
-
-                        {project.browserUrl && (
-                          <span className="text-xs font-mono text-pix-dim truncate max-w-[200px] hidden sm:inline-block">
-                            {project.browserUrl}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Column B: Realistic 3D Laptop with Layered Pop-Out Elements */}
-                    <div
-                      className={`lg:col-span-7 ${
-                        isEven ? 'lg:order-2' : 'lg:order-1'
-                      }`}
-                    >
-                      <LaptopMockup project={project} priority={index < 2} />
-                    </div>
-                  </div>
+                <div>
+                  <p className="text-[13px] font-semibold leading-snug text-white sm:text-sm">
+                    Your brand next
+                  </p>
+                  <p className="mt-0.5 text-[9px] uppercase tracking-[0.14em] text-pix-muted sm:text-[10px]">
+                    Start a project
+                  </p>
                 </div>
-              </div>
-            );
-          })}
+              </a>
+            </Reveal>
+          </div>
         </div>
       </div>
     </section>
